@@ -26,5 +26,54 @@ scale_fill_discrete = scale_fill_viridis_d
 ```
 
 
+## Problem 1: 
 
+Load `instacart` data 
+
+```{r}
+data("instacart")
+```
+
+The **instacart** dataset contains `r nrow(instacart)` rows and `r ncol(instacart)` columns. The data contains the following variables: **`r ls(instacart)`**; and each row in the dataset represents products ordered. 
+In total, there are `r instacart %>% select(product_id) %>% distinct() %>% count()` products found in `r instacart %>% select(user_id, order_id) %>% distinct() %>% count()` orders, and `r instacart %>% select(user_id) %>% distinct() %>% count()` distinct users who made a purchase.
+
+* How many aisles are there, and which aisles are the most items ordered from?
+
+```{r, message = FALSE, collapse = TRUE}
+instacart %>% 
+  summarize(n_aisles = n_distinct(aisle_id))
+  
+instacart %>% 
+  group_by(aisle) %>% 
+  summarize(most_order = n()) %>% 
+  arrange(desc(most_order)) %>% 
+  top_n(3)
+```
+There are **`r instacart %>% select(aisle_id) %>% distinct() %>% count()`** aisles in total. The top 3 aisles with most items ordered are **fresh vegetables, fresh fruits, and packaged vegetables fruits**. 
+
+
+* Make a plot that shows the number of items ordered in each aisle, limiting this to aisles with more than 10000 items ordered. Arrange aisles sensibly, and organize your plot so others can read it.
+
+```{r}
+instacart %>%
+  count(aisle) %>% 
+  filter(n > 10000) %>% 
+  mutate(
+    aisle = factor(aisle),
+    aisle = fct_reorder(aisle, n)) %>% 
+  ggplot(aes(x = aisle, y = n)) + 
+	geom_point() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.3, hjust = 1), 
+        plot.title = element_text(hjust = 0.5)) + 
+  labs(
+    title = "Number of items ordered",
+    x = "Aisles",
+    y = "Number of items"
+  )
+```
+
+
+* Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.
+
+* Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table).
 
