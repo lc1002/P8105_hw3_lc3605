@@ -81,8 +81,9 @@ instacart %>%
   group_by(aisle) %>% 
   count(product_name) %>% 
   mutate(rank = min_rank(desc(n))) %>%
-  filter(rank < 4) %>% 
+  filter(rank <= 3) %>% 
   arrange(aisle, rank) %>%
+  select(-rank, most_popular_items = product_name, number_of_items = n) %>% 
   knitr::kable()
 ```
 
@@ -94,11 +95,26 @@ instacart %>%
   filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) %>% 
   group_by(product_name, order_dow) %>% 
   summarize(mean_hour = mean(order_hour_of_day)) %>% 
+  mutate(
+    order_dow = recode(order_dow,`0` = "Sun", `1` = "Mon", `2` = "Tue", `3` = "Wed", `4` = "Thr", `5` = "Fri", `6` = "Sat")) %>% 
   pivot_wider(
     names_from = order_dow,
     values_from = mean_hour
   ) %>%
-  knitr::kable()
+  knitr::kable(digits = 2)
 ```
 
+
+## Problem 2:
+
+Load and clean the `BRFSS` data.
+
+```{r load brfss data}
+data("brfss_smart2010")
+```
+
+```{r data cleaning for brfss}
+brfss_df = brfss_smart2010 %>% 
+  janitor::clean_names()
+```
 
