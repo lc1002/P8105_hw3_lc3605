@@ -87,13 +87,15 @@ instacart %>%
   knitr::kable()
 ```
 In aisle **baking ingredients**, the most popular item was "Light Brown Sugar", which had been ordered 499 times.
+
 In aisle **dog food care**, the most popular item was "Snack Sticks Chicken & Rice Recipe Dog Treats", which had been ordered 30 times.
+
 In aisle **packaged vegetables fruits**, the most popular item was "Organic Baby Spinach", which had been ordered 9784 times.
 
 
 * Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table).
 
-```{r}
+```{r, message = FALSE}
 instacart %>% 
   filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) %>% 
   group_by(product_name, order_dow) %>% 
@@ -153,6 +155,7 @@ brfss_df_2010 =
 ```
 
 In 2002, states **CT, FL, MA, NC, NJ, PA** were observed at 7 or more locations.
+
 In 2010, 14 states were observed at 7 or more locations: **CA, CO, FL, MA, MD, NC, NE, NJ, NY, OH, PA, SC, TX, WA**.
 
 * Construct a dataset that is limited to Excellent responses, and contains, year, state, and a variable that averages the data_value across locations within a state. 
@@ -169,7 +172,7 @@ excellent_df =
 
 * Make a “spaghetti” plot of this average value over time within a state (that is, make a plot showing a line for each state across years – the geom_line geometry and group aesthetic will help).
 
-```{r spaghetti plot, warning = FALSE}
+```{r spaghetti plot, warning = FALSE, message = FALSE}
 brfss_df %>% 
   filter(response == "Excellent") %>% 
   group_by(year, state) %>%
@@ -188,8 +191,7 @@ brfss_df %>%
 
 ```{r two panel plot}
 brfss_df %>%
-  filter(year == "2006" | 
-         year == "2010",
+  filter(year == "2006" | year == "2010",
          state == "NY") %>% 
   ggplot(aes(x = response, y = data_value, color = response)) +
   geom_boxplot() +
@@ -200,4 +202,5 @@ labs(
     y = "Data Value"
   )
 ```
+
 
