@@ -179,7 +179,7 @@ brfss_df %>%
   summarize(mean_value = mean(data_value)) %>% 
   ggplot(aes(x = year, y = mean_value, group = state, color = state)) +
   geom_line() +
-  theme(legend.position = "right") +
+  theme_bw() +
   labs(
     title = "Average Value overtime in each state",
     x = "Year",
@@ -206,7 +206,7 @@ labs(
 
 ## Problem 3: 
 
-Load, tidy, the accelerometer data. 
+Load, tidy, the `accelerometer` data. 
 
 ```{r, message = FALSE}
 accel_df = 
@@ -231,14 +231,43 @@ The **accelometer** dataset contains `r nrow(accel_df)` rows and `r ncol(accel_d
 * Create a total activity variable for each day, and create a table showing these totals. Are any trends apparent?
 
 ```{r}
-
+accel_df %>%
+  group_by(day, week) %>% 
+  summarize(total_activity = sum(activity_count)) %>% 
+  pivot_wider(
+    names_from = "day",
+    values_from = "total_activity"
+  ) %>% 
+  knitr::kable(digits = 0)
 ```
 
+According to the resulting table, this man tends to have a stable level of activity over weekdays with Monday being less active than other weekdays in the first two weeks. There is extremely low activity levels on the Saturday of week 4 and 5.
 
 
+* Make a single-panel plot that shows the 24-hour activity time courses for each day.
 
+```{r, message = FALSE}
+accel_df %>% 
+  ggplot(aes(x = activity_minute, y = activity_count)) + 
+  geom_line(aes(color = day)) +
+  labs(y = "Total Activity (min)", x = "Day", title = "24-hour activity time of 63 year-old male")
+  
+accel_df %>% 
+  mutate(hour = round(activity_minute/60)) %>% 
+  group_by(day, hour) %>% 
+  summarize(hourly_activity = mean(activity_count)) %>% 
+  ggplot(aes(x = hour, y = hourly_activity, color = day)) + 
+  geom_line() +
+  geom_point(size = 1.5) +
+  scale_x_continuous(name = "Hour", breaks = seq(0, 24, by = 2)) +
+  labs(
+    title = "24 hour activity time of 63 year-old male",
+    x = "Hour",
+    y = "Activity",
+    color = "Day of the Week"
+  )
+```
 
-
-Accelerometer data allows the inspection activity over the course of the day. Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week. Describe in words any patterns or conclusions you can make based on this graph.
+The plot shows that the man is more active at night (Around 20:00 to 22:00) and less active at midnight during sleeping hours from 23:00 to 6:00AM. On weekdays, Tuesday, Wednesday, Thursday has roughly a steady trend, but on Friday, Sunday, and Monday has a more fluctuating trend with a peak. The two largest peaks belong to Sundays between 9 and 13 and Fridays between 21 and 23. Generally, the man is more active during weekdays than weekends. 
 
 
