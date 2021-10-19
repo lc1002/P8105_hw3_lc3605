@@ -251,7 +251,12 @@ accel_df %>%
   ggplot(aes(x = activity_minute, y = activity_count)) + 
   geom_line(aes(color = day)) +
   labs(y = "Total Activity (min)", x = "Day", title = "24-hour activity time of 63 year-old male")
-  
+
+
+
+
+
+## covert activity minutes to hours and plot  
 accel_df %>% 
   mutate(hour = round(activity_minute/60)) %>% 
   group_by(day, hour) %>% 
